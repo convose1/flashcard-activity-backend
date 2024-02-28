@@ -1,0 +1,27 @@
+{
+  "name": "socket_server",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "build": "mkdir dist \\s \\q && babel ./ -s -d dist",
+    "start": "nodemon --exec ts-node index",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^3.0.3",
+    "path": "^0.12.7",
+    "socket.io": "^4.7.4"
+  },
+  "devDependencies": {
+    "@typescript-eslint/parser": "^7.0.0-alpha.0",
+    "babel-cli": "^6.26.0",
+    "eslint": "8.7.0",
+    "prettier": "2.5.1",
+    "typescript": "^5.3.3"
+  },
+  "description": ""
+}
