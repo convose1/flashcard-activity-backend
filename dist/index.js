@@ -17,9 +17,13 @@ let gameStarted = false;
 const channelQuestion = {};
 //New imports
 const httpServer = (0, http_1.createServer)(app);
+const origin = process.env.NODE_ENV == "production"
+    ? "https://convose-flashcard-activity.netlify.app"
+    : process.env.ORIGIN;
+console.log("origin -----", origin);
 const socketIO = new socket_io_1.Server(httpServer, {
     cors: {
-        origin: "http://localhost:3000",
+        origin,
     },
 });
 //Add this before the app.get() block
