@@ -22,15 +22,13 @@ const channelQuestion: ChannelQuestionType = {};
 
 //New imports
 const httpServer = createServer(app);
-const origin =
-  process.env.NODE_ENV == "production"
-    ? "https://convose-flashcard-activity.netlify.app"
-    : process.env.ORIGIN;
-console.log("origin -----", origin);
 
 const socketIO = new Server(httpServer, {
   cors: {
-    origin,
+    origin: [
+      "https://convose-flashcard-activity.netlify.app",
+      "http://localhost:3000",
+    ],
   },
 });
 
