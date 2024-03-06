@@ -1,55 +1,35 @@
-interface UserType {
-  channel_id: string;
-  username: string;
-  user_id: string;
-  avatar: string;
-  point: number;
-  joined: boolean;
-}
+import express, { Express, Request, Response } from "express";
+import { Socket, Server } from "socket.io";
+import cors from "cors";
+import { createServer } from "http";
+import dotenv from "dotenv";
+import {
+  ChannelQuestionType,
+  ParamsType,
+  WinnerPlayload,
+  socketToUserType,
+  userObject,
+} from "./types";
+dotenv.config();
+const app: Express = express();
+const PORT = process.env.PORT || 4000;
 
-interface ParamsType {
-  channel_id: string;
-  username: string;
-  user_id: string;
-  avatar: string;
-}
-interface WinnerPlayload {
-  questionId: string;
-  nextQuestionIndex: number;
-  user_id: string;
-  channel_id: string;
-}
-interface ChannelQuestionType {
-  [key: string]: {
-    currentQuestionIndex: number;
-  };
-}
-
-const express = require("express");
-const app = express();
-const PORT = 4000;
-
-type userObject = {
-  [key: string]: UserType[];
-};
 const users: userObject = {};
-const socketIdToUser = {};
+const socketIdToUser: socketToUserType = {};
 
 let gameStarted = false;
 const channelQuestion: ChannelQuestionType = {};
 
 //New imports
-const http = require("http").Server(app);
-const cors = require("cors");
-
-const socketIO = require("socket.io")(http, {
+const httpServer = createServer(app);
+const socketIO = new Server(httpServer, {
   cors: {
     origin: "http://localhost:3000",
   },
 });
 
 //Add this before the app.get() block
-socketIO.on("connection", (socket) => {
+socketIO.on("connection", (socket: Socket) => {
   socket.on("disconnect", () => {
     delete users[socket.id];
     const user = socketIdToUser[socket.id] || null;
@@ -74,7 +54,7 @@ socketIO.on("connection", (socket) => {
   });
   socket.on("user_join_request", (userInfo: ParamsType) => {
     const channel_id = userInfo.channel_id;
-    socketIdToUser[socket.id] = userInfo;
+
     if (!channelQuestion[channel_id]) {
       channelQuestion[channel_id] = {
         currentQuestionIndex: 0,
@@ -87,6 +67,7 @@ socketIO.on("connection", (socket) => {
       joined: true,
       point: 0,
     };
+    socketIdToUser[socket.id] = user;
     if (users[channel_id]) {
       users[channel_id].push(user);
     } else {
@@ -193,17 +174,10 @@ socketIO.on("connection", (socket) => {
 });
 
 app.use(cors());
-
-app.get("/api", (_, res) => {
-  return res.json({
-    message: "Hello world",
-  });
-});
-
 app.get("/", (_, res) => {
   return res.send("hello");
 });
 
-http.listen(process.env.PORT || 4000, () => {
-  console.log(`Server listening on  `);
+httpServer.listen(PORT, () => {
+  console.log(`Server listening on ${PORT} `);
 });
