@@ -21,10 +21,9 @@ jobs:
         with:
           node-version: "20.x"
 
-      - name: npm install, start, and test
+      - name: npm install,  and test
         run: |
           npm install
-          npm run start --if-present
           npm run test --if-present
 
       - name: Zip artifact for deployment
